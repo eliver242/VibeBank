@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10110f">
+  <meta name="description" content="VibeBank — демонстрационный интерфейс цифрового банка">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VibeBank">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>VibeBank — твои деньги в ритме</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <main id="app" class="app-shell">
+    <section id="login-screen" class="lock-screen hidden">
+      <a class="brand lock-brand" href="#" aria-label="VibeBank"><span class="brand-mark">v</span><span>vibe<span class="brand-light">bank</span></span></a>
+      <div class="lock-content login-content">
+        <div class="lock-icon"><span></span><span></span></div>
+        <p class="eyebrow">РАДЫ ТЕБЯ ВИДЕТЬ</p>
+        <h1>Войти в аккаунт</h1>
+        <p class="muted lock-copy">Введи свои данные для продолжения</p>
+        <form id="login-form" class="login-form">
+          <label class="field-label" for="login-username">Логин</label>
+          <div class="input-wrap"><span class="input-symbol">＠</span><input id="login-username" autocomplete="username" placeholder="Твой логин" required></div>
+          <label class="field-label login-password-label" for="login-password">Пароль</label>
+          <div class="input-wrap"><span class="input-symbol">⌑</span><input id="login-password" type="password" autocomplete="current-password" placeholder="Твой пароль" required></div>
+          <p id="login-error" class="form-error" aria-live="polite"></p>
+          <button class="primary-button login-submit" type="submit">Войти <span>→</span></button>
+        </form>
+        <p class="demo-hint">Демо-аккаунт · eliverlega / eliverlega</p>
+      </div>
+      <p class="lock-footer">VibeBank · учебный демо-проект</p>
+    </section>
+    <section id="lock-screen" class="lock-screen">
+      <a class="brand lock-brand" href="#" aria-label="VibeBank"><span class="brand-mark">v</span><span>vibe<span class="brand-light">bank</span></span></a>
+      <div class="lock-content">
+        <div class="lock-icon"><span></span><span></span></div>
+        <p class="eyebrow">ТВОЙ БАНК. ТВОЙ РИТМ.</p>
+        <h1>С возвращением</h1>
+        <p class="muted lock-copy">Введи PIN-код, чтобы продолжить</p>
+        <div id="pin-dots" class="pin-dots" aria-label="PIN-код: 0 цифр" aria-live="polite">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <p id="pin-error" class="form-error pin-error" aria-live="polite"></p>
+        <div id="keypad" class="keypad" aria-label="Экранная клавиатура">
+          <button type="button" data-digit="1">1</button><button type="button" data-digit="2">2</button><button type="button" data-digit="3">3</button>
+          <button type="button" data-digit="4">4</button><button type="button" data-digit="5">5</button><button type="button" data-digit="6">6</button>
+          <button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
+          <span class="keypad-spacer"></span><button type="button" data-digit="0">0</button><button type="button" class="delete-key" data-action="delete" aria-label="Удалить последнюю цифру">⌫</button>
+        </div>
+        <p class="demo-hint">Демо-доступ · PIN <span>1337</span></p>
+      </div>
+      <p class="lock-footer">VibeBank · учебный демо-проект</p>
+    </section>
+
+    <section id="bank-screen" class="bank-screen hidden">
+      <header class="topbar">
+        <a class="brand" href="#" data-view="dashboard" aria-label="На главную"><span class="brand-mark">v</span><span>vibe<span class="brand-light">bank</span></span></a>
+        <nav class="main-nav" aria-label="Основная навигация">
+          <button class="nav-link active" data-view="dashboard">Основной экран</button>
+          <button class="nav-link" data-view="cards">Карты</button>
+          <button class="nav-link" data-view="payments">Платежи</button>
+          <button class="nav-link" data-view="analytics">Аналитика</button>
+          <button class="nav-link" data-view="admin">Админ-панель <span class="admin-dot"></span></button>
+        </nav>
+        <div class="profile-area">
+          <button class="profile-chip" id="profile-toggle" aria-expanded="false" aria-controls="profile-menu"><span class="online-dot"></span><span id="profile-nickname">Мой аккаунт</span><span class="avatar">V</span><span class="profile-chevron">⌄</span></button>
+          <div class="profile-menu hidden" id="profile-menu">
+            <div class="profile-details"><span class="profile-kicker">ВЛАДЕЛЕЦ СЧЁТА</span><strong>Роман Эливер Легович</strong><span>Крыжопинск</span></div>
+            <label class="profile-kicker nickname-label" for="nickname-input">НИКНЕЙМ</label>
+            <div class="nickname-editor"><input id="nickname-input" maxlength="24" placeholder="Мой аккаунт"><button id="save-nickname" type="button" aria-label="Сохранить ник">✓</button></div>
+            <button class="profile-option" id="theme-toggle" type="button"><span>☼</span><span id="theme-label">Светлая тема</span><span class="option-arrow">→</span></button>
+            <button class="profile-option logout-option" id="logout-button" type="button"><span>↪</span><span>Выйти из аккаунта</span><span class="option-arrow">→</span></button>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-wrap">
+        <section id="dashboard-view" class="view">
+          <div class="welcome-row"><div><p class="eyebrow">ПОНЕДЕЛЬНИК · ТВОЙ ДЕНЬ</p><h1>Иди нахуй, пидар <span class="wave">✳</span></h1></div><div class="demo-badge"><span></span> Демо-счёт</div></div>
+          <div class="dashboard-grid">
+            <div class="left-column">
+              <article class="bank-card" aria-label="Демо-банковская карта">
+                <div class="card-top"><span class="card-brand">vibe<span>bank</span></span><span class="contactless">)))</span></div>
+                <div class="card-chip"><i></i><i></i><i></i><i></i></div>
+                <p id="card-number" class="card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; 1337</p>
+                <div class="card-bottom"><div><span class="card-label">ДЕЙСТВИТЕЛЬНА ДО</span><strong>08/29</strong></div><div><span class="card-label">CVV</span><strong>•••</strong></div><div class="mastercard"><i></i><i></i></div></div>
+                <span class="card-shine"></span>
+              </article>
+              <article class="balance-panel"><div class="balance-heading"><span class="eyebrow">ОБЩИЙ БАЛАНС</span><button id="balance-visibility" class="balance-live balance-visibility" type="button" aria-label="Скрыть баланс">◉</button></div><div class="balance-amount"><span id="balance-value">€0</span><span class="currency">EUR</span></div><p class="balance-caption">Доступно для переводов</p></article>
+              <div class="quick-actions">
+                <button class="action-card" data-view="send"><span class="action-icon">↗</span><span><strong>Отправить деньги</strong><small>Перевод на карту</small></span><span class="action-arrow">→</span></button>
+                <button class="action-card" data-view="iban"><span class="action-icon">⇄</span><span><strong>Платёж за IBAN</strong><small>Банковский перевод</small></span><span class="action-arrow">→</span></button>
+                <button class="action-card" data-view="other"><span class="action-icon">···</span><span><strong>Другие платежи</strong><small>Скоро здесь</small></span><span class="action-arrow">→</span></button>
+              </div>
+            </div>
+            <section class="history-panel"><div class="section-heading"><div><p class="eyebrow">АКТИВНОСТЬ</p><h2>Прошлые платежи</h2></div><span class="history-count" id="history-count">0</span></div><div class="history-tools"><input id="history-search" placeholder="Поиск по операциям…" aria-label="Поиск по истории"><select id="history-filter" aria-label="Фильтр операций"><option value="all">Все операции</option><option value="topup">Поступления</option><option value="outgoing">Расходы</option></select><button id="export-csv" type="button" title="Скачать CSV">⇩ CSV</button></div><div id="transaction-list" class="transaction-list"></div><div id="empty-history" class="empty-history"><div class="empty-icon">↗</div><strong>Пока тихо</strong><p>Твои платежи появятся здесь</p></div><div class="history-footer"><span class="history-dot"></span> Все операции синхронизированы</div></section>
+          </div>
+          <p class="page-footnote">VibeBank — демонстрационный проект. Операции не являются реальными.</p>
+        </section>
+
+        <section id="transfer-view" class="view subview hidden">
+          <button class="back-link" data-view="dashboard"><span>←</span> Вернуться на главную</button>
+          <div class="transfer-wrap"><div class="transfer-heading"><span class="transfer-icon" id="transfer-icon">↗</span><p class="eyebrow" id="transfer-eyebrow">ПЕРЕВОД НА КАРТУ</p><h1 id="transfer-title">Отправить деньги</h1><p class="muted">Текущий баланс <strong id="transfer-balance">€0</strong></p></div>
+            <form id="transfer-form" novalidate><label class="field-label" id="recipient-label" for="recipient-input">Номер карты получателя</label><div id="recipient-control" class="input-wrap"><span class="input-symbol">▤</span><input id="recipient-input" autocomplete="off" inputmode="numeric" placeholder="0000 0000 0000 0000"><span class="field-suffix">16 цифр</span></div><p id="recipient-error" class="form-error"></p>
+              <label class="field-label amount-label" for="amount-input">Сумма перевода</label><div class="input-wrap amount-wrap"><span class="input-symbol">€</span><input id="amount-input" type="number" min="0.01" step="0.01" placeholder="0.00"><span class="field-suffix">EUR</span></div><p id="amount-error" class="form-error"></p><button class="primary-button transfer-submit" type="submit">Отправить <span>→</span></button><p id="transfer-error" class="form-error transfer-error" aria-live="polite"></p><p class="secure-note"><span>◇</span> Защищённый демо-перевод</p>
+            </form>
+          </div>
+        </section>
+
+        <section id="other-view" class="view subview hidden"><button class="back-link" data-view="dashboard"><span>←</span> Вернуться на главную</button><div class="unavailable"><div class="unavailable-art"><span>€</span><i>✳</i><b>···</b></div><p class="eyebrow">СОВСЕМ СКОРО</p><h1>Эта страница<br>пока недоступна</h1><p class="muted">Мы уже работаем над тем, чтобы здесь появилось что-то классное.</p><button class="primary-button" data-view="dashboard">Вернуться на главную <span>→</span></button></div></section>
+
+        <section id="cards-view" class="view hidden"><div class="admin-header"><div><p class="eyebrow">УПРАВЛЕНИЕ КАРТАМИ</p><h1>Мои карты</h1><p class="muted">Управляй картами демо-счёта.</p></div></div><button class="back-link" data-view="dashboard"><span>←</span> Вернуться на главную</button><div class="feature-grid"><article class="feature-card"><div class="bank-card feature-bank-card"><div class="card-top"><span class="card-brand">vibe<span>bank</span></span><span class="contactless">)))</span></div><div class="card-chip"><i></i><i></i><i></i><i></i></div><p class="card-number" id="large-card-number">•••• •••• •••• 1337</p><div class="card-bottom"><div><span class="card-label">ДЕЙСТВИТЕЛЬНА ДО</span><strong>08/29</strong></div><div><span class="card-label">CVV</span><strong>•••</strong></div></div></div><div class="feature-card-row"><div><strong>Основная карта</strong><small>VibeBank · EUR</small></div><span class="active-status" id="card-status">Активна</span></div><button id="freeze-card" class="secondary-button" type="button">Временно заблокировать</button></article><article class="feature-card"><p class="eyebrow">БЕЗОПАСНОСТЬ</p><h2>Лимит на переводы</h2><p class="muted">Настрой дневной лимит для демо-переводов.</p><form id="limit-form"><label class="field-label" for="daily-limit">Дневной лимит, EUR</label><div class="input-wrap"><span class="input-symbol">€</span><input id="daily-limit" type="number" min="1" step="1" placeholder="1 000"></div><button class="primary-button admin-submit" type="submit">Сохранить лимит</button></form></article></div></section>
+
+        <section id="payments-view" class="view hidden"><div class="admin-header"><div><p class="eyebrow">ПЛАТЁЖНЫЙ ЦЕНТР</p><h1>Платежи и переводы</h1><p class="muted">Переводи средства и управляй регулярными платежами.</p></div></div><button class="back-link" data-view="dashboard"><span>←</span> Вернуться на главную</button><div class="payment-actions"><button class="action-card" data-view="send"><span class="action-icon">↗</span><span><strong>Перевод на карту</strong><small>На любую карту · мгновенно</small></span><span class="action-arrow">→</span></button><button class="action-card" data-view="iban"><span class="action-icon">⇄</span><span><strong>Банковский перевод</strong><small>По номеру IBAN</small></span><span class="action-arrow">→</span></button><button class="action-card" id="schedule-payment"><span class="action-icon">◷</span><span><strong>Регулярные платежи</strong><small>Управление автоплатежами</small></span><span class="action-arrow">→</span></button></div><article class="feature-card scheduled-card"><p class="eyebrow">АВТОПЛАТЕЖИ</p><h2>Регулярные платежи</h2><p class="muted">В демо-режиме автосписания отключены. Настоящие платежи не выполняются.</p></article></section>
+
+        <section id="analytics-view" class="view hidden"><div class="admin-header"><div><p class="eyebrow">ТВОИ ФИНАНСЫ</p><h1>Аналитика</h1><p class="muted">Сводка движения средств в демо-аккаунте.</p></div></div><button class="back-link" data-view="dashboard"><span>←</span> Вернуться на главную</button><div class="analytics-grid"><article class="feature-card"><p class="eyebrow">ТЕКУЩИЙ БАЛАНС</p><strong id="analytics-balance" class="analytics-number">€0</strong><p class="muted">Обновляется после каждой операции</p></article><article class="feature-card"><p class="eyebrow">ВСЕГО ОПЕРАЦИЙ</p><strong id="analytics-count" class="analytics-number">0</strong><p class="muted">Записей в истории счёта</p></article><article class="feature-card"><p class="eyebrow">РАСХОДЫ</p><strong id="analytics-spent" class="analytics-number">€0</strong><p class="muted">Сумма исходящих операций</p></article><article class="feature-card"><p class="eyebrow">ПОПОЛНЕНИЯ</p><strong id="analytics-income" class="analytics-number">€0</strong><p class="muted">Сумма входящих операций</p></article></div><article class="feature-card savings-card"><p class="eyebrow">КОПИЛКА</p><h2 id="goal-name">Накопительная цель</h2><div class="goal-progress"><div id="goal-bar"></div></div><div class="goal-meta"><span id="goal-current">€0 накоплено</span><span id="goal-target">из €1 000</span></div><form id="goal-form" class="goal-form"><input id="goal-input" placeholder="Название цели" maxlength="32"><input id="goal-target-input" type="number" min="1" placeholder="Цель, EUR"><button class="primary-button" type="submit">Сохранить цель</button></form><form id="goal-save-form" class="goal-form"><input id="goal-contribution" type="number" min="0.01" step="0.01" placeholder="Пополнить копилку, EUR"><button class="secondary-button" type="submit">Отложить со счёта</button></form></article></section>
+
+        <section id="admin-view" class="view hidden"><div class="admin-header"><div><p class="eyebrow">УПРАВЛЕНИЕ ДЕМО-СЧЁТОМ</p><h1>Админ-панель</h1><p class="muted">Настрой данные и активность своего тестового счёта.</p></div><div class="admin-shield">✳ <span>Только демо</span></div></div><button class="back-link admin-back" data-view="dashboard"><span>←</span> Вернуться на главную</button><div class="admin-grid">
+          <article class="admin-card"><div class="admin-card-icon">＋</div><p class="eyebrow">БАЛАНС</p><h2>Накрутить баланс</h2><p class="admin-description">Добавь средства на свой демо-счёт.</p><form id="topup-form"><label class="field-label" for="topup-input">Сумма пополнения</label><div class="input-wrap"><span class="input-symbol">€</span><input id="topup-input" type="number" min="0.01" step="0.01" placeholder="0.00"><span class="field-suffix">EUR</span></div><p id="topup-error" class="form-error"></p><button class="primary-button admin-submit" type="submit">Подтвердить <span>→</span></button></form><form id="reduce-form" class="reduce-form"><label class="field-label" for="reduce-input">Установить точный баланс</label><div class="input-wrap"><span class="input-symbol">=€</span><input id="reduce-input" type="number" min="0" step="0.01" placeholder="0.00"><span class="field-suffix">EUR</span></div><p id="reduce-error" class="form-error"></p><button class="secondary-button reduce-submit" type="submit">Установить баланс <span>→</span></button></form></article>
+          <article class="admin-card"><div class="admin-card-icon">▤</div><p class="eyebrow">КАРТА</p><h2>Изменить номер карты</h2><p class="admin-description">Введи новый 16-значный номер карты.</p><form id="card-form"><label class="field-label" for="card-input">Новый номер карты</label><div class="input-wrap"><span class="input-symbol">▤</span><input id="card-input" inputmode="numeric" autocomplete="off" placeholder="0000 0000 0000 0000"><span class="field-suffix">16 цифр</span></div><p id="card-error" class="form-error"></p><button class="primary-button admin-submit" type="submit">Подтвердить <span>→</span></button></form></article>
+          <article class="admin-card history-admin-card"><div class="admin-card-icon">⌫</div><p class="eyebrow">ИСТОРИЯ</p><h2>Управление платежами</h2><p class="admin-description">Выбери и удали операции из истории.</p><div id="admin-transactions" class="admin-transactions"></div><div id="admin-empty" class="admin-empty">Операций пока нет</div><button id="delete-selected" class="secondary-button" type="button">Удалить выбранные <span>⌫</span></button></article>
+          <article class="admin-card"><div class="admin-card-icon">⚙</div><p class="eyebrow">СЕРВИСЫ</p><h2>Функции аккаунта</h2><p class="admin-description">Включай и выключай разделы демо-банка.</p><label class="service-toggle"><span>Карты</span><input type="checkbox" data-feature="cards" checked></label><label class="service-toggle"><span>Платежи и переводы</span><input type="checkbox" data-feature="payments" checked></label><label class="service-toggle"><span>Аналитика</span><input type="checkbox" data-feature="analytics" checked></label></article>
+          </div></section>
+      </div>
+      <footer class="site-footer"><span>© 2026 VibeBank</span><span>Почувствуй ритм своих денег <b>✳</b></span></footer>
+    </section>
+    <div id="toast" class="toast" role="status" aria-live="polite"><span class="toast-icon">✓</span><span id="toast-message"></span><button id="toast-close" aria-label="Закрыть уведомление">×</button></div>
+  </main>
+  <script src="app.js"></script>
+  <script>if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(() => {});</script>
+</body>
+</html>
