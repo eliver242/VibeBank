@@ -2,7 +2,7 @@
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
   const STORAGE_KEY = 'vibebank-demo-state-v1';
-  const initialState = { balance: 0, cardNumber: '4829017600041337', transactions: [], cardFrozen: false, dailyLimit: 1000, balanceHidden: false, savings: { name: 'Накопительная цель', target: 1000, saved: 0 }, enabledFeatures: { cards: true, payments: true, analytics: true } };
+  const initialState = { balance: 0, cardNumber: '4829017600041337', transactions: [], cardFrozen: false, dailyLimit: 1000, balanceHidden: false, savings: { name: 'Накопительная цель', target: 1000, saved: 0 }, enabledFeatures: { cards: true, payments: true, analytics: true }, scheduledPayments: [], extraCards: [], pinCode: '1337', onlinePayments: true, contactlessPayments: true, moneyRequests: [] };
   let state;
   try { state = { ...initialState, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') }; }
   catch { state = { ...initialState }; }
@@ -53,6 +53,11 @@
     $('#mobile-mini-balance').textContent = state.balanceHidden ? '••••' : euros(state.balance);
     $('#mobile-card-number').textContent = `••••  ••••  ••••  ${state.cardNumber.slice(-4)}`;
     $('#daily-limit').value = state.dailyLimit;
+    $('#online-payments').checked = state.onlinePayments !== false;
+    $('#contactless-payments').checked = state.contactlessPayments !== false;
+    $('#extra-cards').innerHTML = state.extraCards.map((card, index) => `<div class="extra-card-row"><span>•••• ${escapeHtml(card.last4)} · Виртуальная</span><button type="button" data-freeze-card="${index}">${card.frozen ? 'Разблокировать' : 'Заморозить'}</button></div>`).join('');
+    $('#scheduled-list').innerHTML = state.scheduledPayments.map((payment, index) => `<div class="scheduled-row"><span><strong>${escapeHtml(payment.name)}</strong><small>${escapeHtml(payment.date)}</small></span><b>${euros(payment.amount)}</b><button type="button" data-cancel-schedule="${index}" aria-label="Отменить платёж">×</button></div>`).join('');
+    $('#scheduled-empty').classList.toggle('hidden', state.scheduledPayments.length > 0);
     $$('[data-feature]').forEach((input) => { input.checked = state.enabledFeatures?.[input.dataset.feature] !== false; });
     $$('[data-view="cards"], #cards-view').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.cards === false));
     $$('[data-view="payments"]').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.payments === false));
@@ -105,15 +110,19 @@
   }
 
   function configureTransfer() {
-    const iban = transferType === 'iban';
-    $('#transfer-icon').textContent = iban ? '⇄' : '↗';
-    $('#transfer-eyebrow').textContent = iban ? 'БАНКОВСКИЙ ПЕРЕВОД' : 'ПЕРЕВОД НА КАРТУ';
-    $('#transfer-title').textContent = iban ? 'Платёж за IBAN' : 'Отправить деньги';
-    $('#recipient-label').textContent = iban ? 'IBAN получателя' : 'Номер карты получателя';
-    $('#recipient-input').placeholder = iban ? 'DE89 3704 0044 0532 0130 00' : '0000 0000 0000 0000';
-    $('#recipient-input').inputMode = iban ? 'text' : 'numeric';
-    $('#recipient-control .input-symbol').textContent = iban ? '⌗' : '▤';
-    $('#recipient-control .field-suffix').textContent = iban ? 'IBAN' : '16 цифр';
+    const methods = {
+      card: ['↗', 'ПЕРЕВОД НА КАРТУ', 'Отправить деньги', 'Номер карты получателя', '0000 0000 0000 0000', 'numeric', '▤', '16 цифр'],
+      iban: ['⇄', 'БАНКОВСКИЙ ПЕРЕВОД', 'Платёж за IBAN', 'IBAN получателя', 'DE89 3704 0044 0532 0130 00', 'text', '⌗', 'IBAN'],
+      mobile: ['⌕', 'ОПЛАТА УСЛУГ', 'Мобильная связь', 'Номер телефона', '+49 151 23456789', 'tel', '☎', 'Телефон'],
+      utilities: ['⌂', 'ОПЛАТА УСЛУГ', 'Коммунальный платёж', 'Номер лицевого счёта', 'Номер счёта', 'text', '⌂', 'Лицевой счёт'],
+      internet: ['⌁', 'ОПЛАТА УСЛУГ', 'Оплата интернета', 'Номер договора или аккаунт', 'Номер договора', 'text', '⌁', 'Аккаунт'],
+      subscription: ['◷', 'ОПЛАТА УСЛУГ', 'Оплата подписки', 'Название сервиса', 'Например, Music Plus', 'text', '◷', 'Сервис'],
+      qr: ['▦', 'ДЕМО-ПЛАТЁЖ', 'Оплата по коду', 'Код платежа', 'Введи тестовый код', 'text', '▦', 'Код']
+    };
+    const data = methods[transferType] || methods.card;
+    $('#transfer-icon').textContent = data[0]; $('#transfer-eyebrow').textContent = data[1]; $('#transfer-title').textContent = data[2];
+    $('#recipient-label').textContent = data[3]; $('#recipient-input').placeholder = data[4]; $('#recipient-input').inputMode = data[5];
+    $('#recipient-control .input-symbol').textContent = data[6]; $('#recipient-control .field-suffix').textContent = data[7];
     $('#recipient-input').value = '';
     $('#amount-input').value = '';
     $('#recipient-error').textContent = '';
@@ -141,7 +150,7 @@
     $$('#pin-dots span').forEach((dot, index) => dot.classList.toggle('filled', index < pin.length));
     $('#pin-dots').setAttribute('aria-label', `PIN-код: ${pin.length} цифр`);
     if (pin.length === 4) {
-      if (pin === '1337') setTimeout(showBank, 140);
+      if (pin === state.pinCode) setTimeout(showBank, 140);
       else { $('#pin-error').textContent = 'Неверный PIN-код. Попробуй ещё раз.'; pin = ''; setTimeout(() => $$('#pin-dots span').forEach((dot) => dot.classList.remove('filled')), 180); $('#pin-dots').setAttribute('aria-label', 'PIN-код: 0 цифр'); }
     }
   });
@@ -165,6 +174,12 @@
   });
 
   document.addEventListener('click', (event) => {
+    const paymentButton = event.target.closest('[data-payment-type]');
+    if (paymentButton) { event.preventDefault(); transferType = paymentButton.dataset.paymentType; $$('.view').forEach((view) => view.classList.toggle('hidden', view.id !== 'transfer-view')); $('#transfer-view').classList.remove('hidden'); $$('.nav-link,.mobile-nav button').forEach((item) => item.classList.toggle('active', item.dataset.view === 'payments')); configureTransfer(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    const cardToggle = event.target.closest('[data-freeze-card]');
+    if (cardToggle) { const card = state.extraCards[Number(cardToggle.dataset.freezeCard)]; if (card) card.frozen = !card.frozen; save(); render(); showToast(card?.frozen ? 'Виртуальная карта заморожена.' : 'Виртуальная карта активна.'); return; }
+    const cancelSchedule = event.target.closest('[data-cancel-schedule]');
+    if (cancelSchedule) { state.scheduledPayments.splice(Number(cancelSchedule.dataset.cancelSchedule), 1); save(); render(); showToast('Запланированный платёж отменён.'); return; }
     const button = event.target.closest('[data-view]');
     if (button) { event.preventDefault(); navigate(button.dataset.view); }
   });
@@ -181,17 +196,22 @@
     const recipient = $('#recipient-input').value.trim();
     const digits = recipient.replace(/\D/g, '');
     const amount = Number($('#amount-input').value);
-    const recipientValid = transferType === 'card' ? digits.length === 16 : /^[A-Z]{2}[A-Z0-9]{13,32}$/.test(recipient.replace(/\s/g, ''));
-    $('#recipient-error').textContent = recipientValid ? '' : transferType === 'card' ? 'Введите корректный номер карты.' : 'Введите корректный IBAN.';
+    let recipientValid = recipient.length >= 3; let recipientMessage = 'Проверь введённые данные.';
+    if (transferType === 'card') { recipientValid = digits.length === 16; recipientMessage = 'Введите корректный номер карты.'; }
+    else if (transferType === 'iban') { recipientValid = /^[A-Z]{2}[A-Z0-9]{13,32}$/.test(recipient.replace(/\s/g, '')); recipientMessage = 'Введите корректный IBAN.'; }
+    else if (transferType === 'mobile') { recipientValid = /^[+\d][\d\s()\-]{7,18}$/.test(recipient); recipientMessage = 'Введите корректный номер телефона.'; }
+    $('#recipient-error').textContent = recipientValid ? '' : recipientMessage;
     $('#amount-error').textContent = Number.isFinite(amount) && amount > 0 ? '' : 'Введите сумму больше нуля.';
     $('#transfer-error').textContent = '';
     if (!recipientValid || !Number.isFinite(amount) || amount <= 0) return;
+    if (!state.onlinePayments && ['subscription', 'qr'].includes(transferType)) { $('#transfer-error').textContent = 'Интернет-платежи отключены в настройках карты.'; return; }
     if (state.cardFrozen) { $('#transfer-error').textContent = 'Карта заблокирована. Разблокируй её в разделе «Карты».'; return; }
     if (amount > state.dailyLimit) { $('#transfer-error').textContent = `Превышен дневной лимит ${euros(state.dailyLimit)}.`; return; }
     if (amount > state.balance) { $('#transfer-error').textContent = 'Недостаточно баланса.'; return; }
     state.balance = Math.round((state.balance - amount) * 100) / 100;
-    const target = transferType === 'card' ? `•••• ${digits.slice(-4)}` : `IBAN ${recipient.replace(/\s/g, '').slice(0, 4)}…${recipient.replace(/\s/g, '').slice(-4)}`;
-    makeTransaction(transferType, amount, `Перевод · ${target}`);
+    const target = transferType === 'card' ? `•••• ${digits.slice(-4)}` : transferType === 'iban' ? `IBAN ${recipient.replace(/\s/g, '').slice(0, 4)}…${recipient.replace(/\s/g, '').slice(-4)}` : recipient;
+    const title = ['card', 'iban'].includes(transferType) ? `Перевод · ${target}` : `${$('#transfer-title').textContent} · ${target}`;
+    makeTransaction(transferType, amount, title);
     save(); render(); navigate('dashboard');
     showToast('Успешная транзакция. Деньги отправлены.');
   });
@@ -233,11 +253,15 @@
     state.transactions = state.transactions.filter((tx) => !selected.has(tx.id)); save(); render(); showToast('Выбранные операции удалены.');
   });
   $('#freeze-card').addEventListener('click', () => { state.cardFrozen = !state.cardFrozen; save(); render(); showToast(state.cardFrozen ? 'Демо-карта заблокирована.' : 'Демо-карта разблокирована.'); });
+  $('#create-card').addEventListener('click', () => { const last4 = String(Math.floor(1000 + Math.random() * 9000)); state.extraCards.push({ last4, frozen: false }); save(); render(); showToast(`Виртуальная карта •••• ${last4} выпущена.`); });
+  $('#online-payments').addEventListener('change', (event) => { state.onlinePayments = event.target.checked; save(); showToast(`Интернет-покупки ${state.onlinePayments ? 'включены' : 'отключены'}.`); });
+  $('#contactless-payments').addEventListener('change', (event) => { state.contactlessPayments = event.target.checked; save(); showToast(`Бесконтактная оплата ${state.contactlessPayments ? 'включена' : 'отключена'}.`); });
+  $('#change-pin').addEventListener('click', () => { const next = window.prompt('Новый PIN-код должен содержать 4 цифры:'); if (next === null) return; if (!/^\d{4}$/.test(next)) return showToast('PIN должен состоять ровно из 4 цифр.', true); state.pinCode = next; save(); showToast('Демо-PIN изменён.'); });
   $('#limit-form').addEventListener('submit', (event) => { event.preventDefault(); const limit = Number($('#daily-limit').value); if (!Number.isFinite(limit) || limit <= 0) return showToast('Укажи лимит больше нуля.', true); state.dailyLimit = limit; save(); showToast('Дневной лимит сохранён.'); });
-  $('#schedule-payment').addEventListener('click', () => showToast('Регулярные платежи доступны только в режиме просмотра.', true));
-  $('#request-money').addEventListener('click', () => showToast('Демо-запрос на получение денег создан.'));
-  $('#mobile-inbox').addEventListener('click', () => showToast('Новых уведомлений нет.'));
-  $('#mobile-rewards').addEventListener('click', () => showToast('Бонусы появятся после первых демо-покупок.'));
+  $('#schedule-form').addEventListener('submit', (event) => { event.preventDefault(); const name = $('#schedule-name').value.trim(); const amount = Number($('#schedule-amount').value); const date = $('#schedule-date').value; if (!name || !date || !Number.isFinite(amount) || amount <= 0) return showToast('Заполни название, сумму и дату.', true); state.scheduledPayments.push({ name, amount, date }); save(); render(); event.target.reset(); showToast('Демо-платёж добавлен в расписание.'); });
+  $('#request-money').addEventListener('click', () => { const ref = Math.random().toString(36).slice(2, 8).toUpperCase(); state.moneyRequests.unshift({ ref, date: new Date().toLocaleString('ru-RU') }); save(); showToast(`Демо-запрос создан · код ${ref}`); });
+  $('#mobile-inbox').addEventListener('click', () => { const recent = state.transactions.slice(0, 3).map((tx) => tx.title).join(' · '); showToast(recent ? `Последние операции: ${recent}` : 'Пока нет новых операций.'); });
+  $('#mobile-rewards').addEventListener('click', () => { const points = state.transactions.filter((tx) => tx.kind !== 'topup').length * 10; showToast(`Демо-бонусы: ${points} баллов · начисляем 10 за расходную операцию.`); });
   $('#mobile-pet').addEventListener('click', () => $('#profile-toggle').click());
   $('#history-search').addEventListener('input', render);
   $('#history-filter').addEventListener('change', render);
