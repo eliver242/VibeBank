@@ -49,6 +49,9 @@
     $('#balance-visibility').textContent = state.balanceHidden ? '◎' : '◉';
     $('#balance-visibility').setAttribute('aria-label', state.balanceHidden ? 'Показать баланс' : 'Скрыть баланс');
     $('#balance-value').textContent = state.balanceHidden ? '••••••' : euros(state.balance);
+    $('#mobile-balance').textContent = state.balanceHidden ? '••••••' : euros(state.balance);
+    $('#mobile-mini-balance').textContent = state.balanceHidden ? '••••' : euros(state.balance);
+    $('#mobile-card-number').textContent = `••••  ••••  ••••  ${state.cardNumber.slice(-4)}`;
     $('#daily-limit').value = state.dailyLimit;
     $$('[data-feature]').forEach((input) => { input.checked = state.enabledFeatures?.[input.dataset.feature] !== false; });
     $$('[data-view="cards"], #cards-view').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.cards === false));
@@ -232,6 +235,10 @@
   $('#freeze-card').addEventListener('click', () => { state.cardFrozen = !state.cardFrozen; save(); render(); showToast(state.cardFrozen ? 'Демо-карта заблокирована.' : 'Демо-карта разблокирована.'); });
   $('#limit-form').addEventListener('submit', (event) => { event.preventDefault(); const limit = Number($('#daily-limit').value); if (!Number.isFinite(limit) || limit <= 0) return showToast('Укажи лимит больше нуля.', true); state.dailyLimit = limit; save(); showToast('Дневной лимит сохранён.'); });
   $('#schedule-payment').addEventListener('click', () => showToast('Регулярные платежи доступны только в режиме просмотра.', true));
+  $('#request-money').addEventListener('click', () => showToast('Демо-запрос на получение денег создан.'));
+  $('#mobile-inbox').addEventListener('click', () => showToast('Новых уведомлений нет.'));
+  $('#mobile-rewards').addEventListener('click', () => showToast('Бонусы появятся после первых демо-покупок.'));
+  $('#mobile-pet').addEventListener('click', () => $('#profile-toggle').click());
   $('#history-search').addEventListener('input', render);
   $('#history-filter').addEventListener('change', render);
   $('#export-csv').addEventListener('click', () => {

@@ -87,6 +87,12 @@
       <div class="page-wrap">
         <section id="dashboard-view" class="view">
           <div class="welcome-row"><div><p class="eyebrow">ПОНЕДЕЛЬНИК · ТВОЙ ДЕНЬ</p><h1>Иди нахуй, пидар <span class="wave">✳</span></h1></div><div class="demo-badge"><span></span> Демо-счёт</div></div>
+          <section class="mobile-bank-home">
+            <div class="mobile-home-top"><span class="mobile-user-avatar">V</span><button class="mobile-inbox" id="mobile-inbox" aria-label="Уведомления">◔<i>1</i></button><button class="mobile-rewards" id="mobile-rewards" aria-label="Бонусы">✳</button><button class="mobile-pet" id="mobile-pet" aria-label="Профиль">◉</button><button class="mobile-stats" data-view="analytics" aria-label="Статистика">▥</button><span class="mobile-mini-balance" id="mobile-mini-balance">€0</span></div>
+            <button id="request-money" class="request-money"><span>✋</span> Попросить деньги</button>
+            <div class="mobile-big-balance"><span id="mobile-balance">€0</span><small>EUR</small></div>
+            <div class="mobile-card-art"><span class="mobile-card-name">vibe<span>bank</span></span><span class="mobile-card-contact">)))</span><span class="mobile-card-chip"></span><strong id="mobile-card-number">•••• •••• •••• 1337</strong><div class="mobile-card-bottom"><span>VALID THRU&nbsp; 08/29</span><span>•••</span><b>◒</b></div></div>
+          </section>
           <div class="dashboard-grid">
             <div class="left-column">
               <article class="bank-card" aria-label="Демо-банковская карта">
@@ -101,6 +107,7 @@
                 <button class="action-card" data-view="send"><span class="action-icon">↗</span><span><strong>Отправить деньги</strong><small>Перевод на карту</small></span><span class="action-arrow">→</span></button>
                 <button class="action-card" data-view="iban"><span class="action-icon">⇄</span><span><strong>Платёж за IBAN</strong><small>Банковский перевод</small></span><span class="action-arrow">→</span></button>
                 <button class="action-card" data-view="other"><span class="action-icon">···</span><span><strong>Другие платежи</strong><small>Скоро здесь</small></span><span class="action-arrow">→</span></button>
+                <button class="action-card mobile-goals-action" data-view="analytics"><span class="action-icon">◇</span><span><strong>Копилка</strong><small>Твои цели</small></span><span class="action-arrow">→</span></button>
               </div>
             </div>
             <section class="history-panel"><div class="section-heading"><div><p class="eyebrow">АКТИВНОСТЬ</p><h2>Прошлые платежи</h2></div><span class="history-count" id="history-count">0</span></div><div class="history-tools"><input id="history-search" placeholder="Поиск по операциям…" aria-label="Поиск по истории"><select id="history-filter" aria-label="Фильтр операций"><option value="all">Все операции</option><option value="topup">Поступления</option><option value="outgoing">Расходы</option></select><button id="export-csv" type="button" title="Скачать CSV">⇩ CSV</button></div><div id="transaction-list" class="transaction-list"></div><div id="empty-history" class="empty-history"><div class="empty-icon">↗</div><strong>Пока тихо</strong><p>Твои платежи появятся здесь</p></div><div class="history-footer"><span class="history-dot"></span> Все операции синхронизированы</div></section>
