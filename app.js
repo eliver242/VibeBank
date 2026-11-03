@@ -51,9 +51,9 @@
     $('#balance-value').textContent = state.balanceHidden ? '••••••' : euros(state.balance);
     $('#daily-limit').value = state.dailyLimit;
     $$('[data-feature]').forEach((input) => { input.checked = state.enabledFeatures?.[input.dataset.feature] !== false; });
-    $$('.nav-link[data-view="cards"], #cards-view').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.cards === false));
-    $$('.nav-link[data-view="payments"]').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.payments === false));
-    $$('.nav-link[data-view="analytics"], #analytics-view').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.analytics === false));
+    $$('[data-view="cards"], #cards-view').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.cards === false));
+    $$('[data-view="payments"]').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.payments === false));
+    $$('[data-view="analytics"], #analytics-view').forEach((node) => node.classList.toggle('hidden', state.enabledFeatures?.analytics === false));
     fitBalanceAmount();
   }
 
@@ -96,6 +96,7 @@
       configureTransfer();
     }
     $$('.nav-link').forEach((button) => button.classList.toggle('active', button.dataset.view === view || (['send', 'iban', 'other'].includes(view) && button.dataset.view === 'payments')));
+    $$('.mobile-nav button').forEach((button) => button.classList.toggle('active', button.dataset.view === view || (['send', 'iban', 'other'].includes(view) && button.dataset.view === 'payments')));
     if (view === 'dashboard') render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

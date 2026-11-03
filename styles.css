@@ -111,3 +111,29 @@ body:not(.light-theme) .primary-button{background:#e8f35a;color:#171811}body:not
 body:not(.light-theme) .secondary-button{background:#20221b;border-color:#444637;color:#dedfd5}body:not(.light-theme) .secondary-button:hover{border-color:#ff7676;color:#ffaaa0}
 body:not(.light-theme) .goal-progress{background:#303229}body:not(.light-theme) .toast{box-shadow:0 15px 40px #0008}
 @media (display-mode: standalone){body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}.topbar{padding-top:env(safe-area-inset-top)}}
+
+/* iPhone 13 portrait (390 CSS px): roomy single-column layout and thumb navigation. */
+.mobile-nav{display:none}
+@media(max-width:600px){
+  body{font-size:15px;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+  .bank-screen{padding:0 16px}
+  .topbar{height:60px;position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(18px);margin:0 -16px;padding:0 16px}
+  .main-nav{display:none}
+  .profile-chip{gap:7px;padding:8px 0}.profile-chip>span:nth-child(2){font-size:11px;max-width:92px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.profile-chevron{display:none}
+  .page-wrap{padding:22px 0 calc(105px + env(safe-area-inset-bottom));min-height:calc(100dvh - 60px)}
+  .welcome-row{display:block;margin-bottom:17px}.welcome-row .eyebrow{font-size:9px;letter-spacing:1.4px}.welcome-row h1{font-size:clamp(19px,5.5vw,23px);line-height:1.12;letter-spacing:-.7px;max-width:100%;overflow-wrap:anywhere}.wave{font-size:16px}.demo-badge{display:inline-flex;margin-top:11px;padding:6px 9px}
+  .dashboard-grid{display:flex;flex-direction:column;gap:13px}.left-column{display:flex;flex-direction:column;gap:11px;width:100%;min-width:0}
+  .bank-card{width:100%;min-height:0;aspect-ratio:1.586;padding:clamp(15px,5vw,20px);border-radius:17px;display:flex;flex-direction:column;justify-content:flex-start}
+  .card-brand{font-size:15px}.contactless{font-size:13px}.card-chip{width:30px;height:23px;margin-top:auto;margin-bottom:8px}.card-number{font-size:clamp(14px,4vw,17px);letter-spacing:1.2px;margin:0 0 13px;white-space:nowrap}.card-bottom{gap:17px}.card-label{font-size:6px}.card-bottom strong{font-size:9px}.mastercard{transform:scale(.8);transform-origin:right center}
+  .balance-panel{width:100%;min-height:112px;padding:14px 16px;border-radius:14px}.balance-amount{font-size:clamp(24px,7vw,30px);margin-top:10px}.balance-caption{font-size:10px;margin-top:3px}
+  .quick-actions{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.action-card{min-height:92px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:10px 9px;gap:7px;border-radius:12px}.action-icon{width:29px;height:29px}.action-card>span:nth-child(2){gap:3px}.action-card strong{font-size:9px;line-height:1.2}.action-card small{font-size:8px;line-height:1.2}.action-arrow{display:none}
+  .history-panel{width:100%;height:320px;min-height:0;padding:15px 14px 0;border-radius:14px}.section-heading{padding-bottom:11px}.section-heading h2{font-size:15px}.history-tools{gap:5px;padding:8px 0}.history-tools input,.history-tools select{height:32px;font-size:9px}.history-tools select{max-width:94px}.history-tools button{height:32px;padding:0 7px;font-size:8px}.empty-history{min-height:120px}.empty-icon{width:34px;height:34px;margin-bottom:8px}.empty-history strong{font-size:11px}.empty-history p{font-size:9px}.history-footer{height:32px;font-size:8px}.transaction-row{gap:8px;padding:9px 0}.transaction-icon{width:28px;height:28px}.transaction-info strong{font-size:9px}.transaction-info small{font-size:8px}.transaction-amount{font-size:9px}
+  .page-footnote{font-size:8px;line-height:1.4;margin-top:11px}.site-footer{display:none}
+  .mobile-nav{position:fixed;display:flex;z-index:12;left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));height:60px;justify-content:space-around;align-items:center;padding:4px 5px;border:1px solid color-mix(in srgb,var(--line) 82%,transparent);border-radius:18px;background:color-mix(in srgb,var(--panel) 90%,transparent);backdrop-filter:blur(20px);box-shadow:0 8px 28px #0003}
+  .mobile-nav button{flex:1;min-width:0;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;background:transparent;color:var(--muted);cursor:pointer}.mobile-nav button span{font-size:17px;line-height:20px}.mobile-nav button small{font-size:8px;line-height:11px}.mobile-nav button.active{color:var(--yellow)}
+  .subview{min-height:calc(100dvh - 170px)}.transfer-wrap{margin-top:24px}.transfer-wrap form{padding:17px}.unavailable{margin:34px auto 0}
+  .admin-header{align-items:flex-start;gap:8px}.admin-header h1{font-size:23px}.admin-shield{flex:none}.admin-grid{grid-template-columns:1fr}.admin-card{padding:16px}.history-admin-card{grid-column:auto}.feature-grid,.analytics-grid{grid-template-columns:1fr}.feature-bank-card{width:100%;aspect-ratio:1.586;min-height:0}.payment-actions{grid-template-columns:1fr}.payment-actions .action-card{min-height:58px;flex-direction:row;align-items:center}.payment-actions .action-arrow{display:block}
+  .savings-card{margin-top:14px}.goal-form{display:grid;grid-template-columns:1fr}.goal-form .primary-button,.goal-form .secondary-button{width:100%}
+  .toast{top:calc(12px + env(safe-area-inset-top));right:12px;width:calc(100vw - 24px)}
+}
+@media(max-width:370px){.bank-screen{padding-left:12px;padding-right:12px}.quick-actions{gap:5px}.action-card{padding:8px 6px}.action-card strong{font-size:8px}.history-tools input{min-width:80px}}
